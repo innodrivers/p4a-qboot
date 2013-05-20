@@ -20,6 +20,8 @@ extern int p4a_board_init(void);
 
 static int p4a_init(void)
 {
+	*REG32(PMU_CTRL_REG) |= (1<<28);    //enable Watchdog reset whole chip
+
 	p4a_board_init();
 
 	return 0;

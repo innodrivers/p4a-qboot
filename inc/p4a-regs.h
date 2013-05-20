@@ -101,6 +101,7 @@
 /* PMU Registers */
 #define PMU_REG(off)		(P4A_PMU_BASE + (off))
 
+#define PMU_CTRL_REG			PMU_REG(0x00)
 #define PMU_PLL1_CTRL_REG		PMU_REG(0x74)
 #define PMU_PLL2_CTRL_REG		PMU_REG(0x78)
 #define PMU_PLL3_CTRL_REG		PMU_REG(0xa4)
