@@ -75,21 +75,25 @@ bss_start:	.word	__bss_start
 bss_end:	.word	__bss_end
 stack_end:	.word	__stack_end
 
+	.align(2)
 	.ascii "CMDLINE:"
 	.global __linux_cmdline
 __linux_cmdline:
 	.fill 0x100
 
+	.align(2)
 	.ascii "MACHID:"
 	.global __linux_machid
 __linux_machid:
 	.fill 16
 
+	.align(2)
 	.ascii "ATAGADDR:"
 	.global __linux_atag_addr
 __linux_atag_addr:
 	.fill 16
 
+	.align(2)
 	.ascii "KERNELADDR:"
 	.global __linux_kernel_addr
 __linux_kernel_addr:
