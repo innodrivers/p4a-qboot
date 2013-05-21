@@ -9,29 +9,24 @@
 	.global _start
 
 _start:
-	ldr r0,=0xe1200108
-	ldr r1,[r0]
-	add r1,r1,#(4<<2)
-	mov pc,r1
+	@ adjust PC (p4a CPU reason)
+	ldr r0, =0xe1200108
+	ldr r1, [r0]
+	add r1, r1, #(4<<2)
+	mov pc, r1
+
 	@ set to SVC mode and disable all interrupts
 	msr 	cpsr_c, #(PSR_I_BIT | PSR_F_BIT | SVC_MODE)
 
-	@ disable MMU if enabled
-	/*
-	mrc		p15, 0, r0, c1, c0, 0	@ read CP15 control register
-	tst		r0, #0x1				@ is MMU enabled ?
-	bicne	r0, r0, #0x1			@ clear bit0
-	mcrne	p15, 0, r0, c1, c0, 0	@ write value back
-	*/
-
-	 MRC     p15, 0, r0, c1, c0, 0           //; Get control register
-        BIC     r0, r0, #(1 << 0)          //   ; Disable MMU
-        BIC     r0, r0, #(1 << 2)          //   ; Disable D Cache
-        BIC     r0, r0, #(1 << 12)            // ; Disable I Cache
-        MCR     p15, 0, r0, c1, c0, 0         //  ; Write control register
-        MRC     p15, 0, r0, c1, c0, 1          // ; Get Auxiliary control register
-        BIC     r0, r0, #(1 << 1)     //     ; Disable L2 Cache
-        MCR     p15, 0, r0, c1, c0, 1         //  ; Write Auxiliary control register
+	@ disable MMU and cache
+	mrc     p15, 0, r0, c1, c0, 0	@ Get control register
+	bic     r0, r0, #(1 << 0)		@ Disable MMU
+	bic     r0, r0, #(1 << 2)		@ Disable D Cache
+	bic     r0, r0, #(1 << 12)		@ Disable I Cache
+	mcr     p15, 0, r0, c1, c0, 0	@ Write control register
+	mrc     p15, 0, r0, c1, c0, 1	@ Get Auxiliary control register
+	bic     r0, r0, #(1 << 1)		@ Disable L2 Cache
+	mcr     p15, 0, r0, c1, c0, 1	@ Write Auxiliary control register
 	
 	@ are we running from our VMA
 	ldr		r0, =1f
@@ -79,6 +74,26 @@ setup_stack:
 bss_start:	.word	__bss_start
 bss_end:	.word	__bss_end
 stack_end:	.word	__stack_end
+
+	.ascii "CMDLINE:"
+	.global __linux_cmdline
+__linux_cmdline:
+	.fill 0x100
+
+	.ascii "MACHID:"
+	.global __linux_machid
+__linux_machid:
+	.fill 16
+
+	.ascii "ATAGADDR:"
+	.global __linux_atag_addr
+__linux_atag_addr:
+	.fill 16
+
+	.ascii "KERNELADDR:"
+	.global __linux_kernel_addr
+__linux_kernel_addr:
+	.fill 16
 
 	.section ".stack", "aw", %nobits
 user_stack:	.space	8192

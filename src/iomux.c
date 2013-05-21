@@ -20,12 +20,12 @@ typedef struct {
 
 static inline u32 rd_iomux_regl(int iomux_regid)
 {
-	return __raw_readl(IOMUX_REG(iomux_regid));
+	return *REG32(IOMUX_REG(iomux_regid));
 }
 
 static inline void wr_iomux_regl(int iomux_regid, u32 val)
 {
-	__raw_writel(val, IOMUX_REG(iomux_regid));
+	*REG32(IOMUX_REG(iomux_regid)) = val;
 }
 
 void p4a_iomux_config(p4a_mux_pin_t pins[], int num)
