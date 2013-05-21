@@ -45,7 +45,7 @@ static void boot_linux(void)
 	argv[i++] = "-a";
 	argv[i++] = "0x46000100";	// atag address
 	argv[i++] = "-c";
-	argv[i++] = "console=ttyS1,115200 init=/linuxrc mem=32M cpu1_mem=64M@0x42000000";	//command line string
+	argv[i++] = "console=ttyS1,115200 init=/linuxrc mem=32M cpu1_mem=64M@0x42000000 mbox_mem=2M@0x41800000";	//command line string
 	argv[i++] = "-k";
 	argv[i++] = "0x46008000";	//kernel address
 	argv[i++] = "-b";
