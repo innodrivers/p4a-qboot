@@ -23,7 +23,23 @@ static p4a_mux_pin_t muxpins_cfg[] = {	/* p4a bringup */
 	MP_UART3RX_PAD_UART3_RX,
 	MP_UART3TX_PAD_UART3_TX,
 
-	MP_GPIO10_PAD_GPIO10,
+	/* Nand Controller */
+	MP_NFCEN0_PAD_NF_CEN0,
+	MP_NFRBN0_PAD_NF_RBN0,
+	MP_NFCLE_PAD_NF_CLE,
+	MP_NFALE_PAD_NF_ALE,
+	MP_NFWRN_PAD_NF_WRN,
+	MP_NFRDN_PAD_NF_RDN,
+	MP_NFD0_PAD_NF_D0,
+	MP_NFD1_PAD_NF_D1,
+	MP_NFD2_PAD_NF_D2,
+	MP_NFD3_PAD_NF_D3,
+	MP_NFD4_PAD_NF_D4,
+	MP_NFD5_PAD_NF_D5,
+	MP_NFD6_PAD_NF_D6,
+	MP_NFD7_PAD_NF_D7,
+
+	
 };
 
 int p4a_board_init(void)
@@ -37,6 +53,9 @@ int p4a_board_init(void)
 
 	//UART4W as serial debug port
 	//serial_init(2);
+
+	//NAND controller
+	platform_init_nand();
 
 	return 0;
 }
