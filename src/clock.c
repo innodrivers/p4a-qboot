@@ -151,6 +151,7 @@ unsigned long get_uart_clk(int idx)
 
 unsigned long get_timer_clk(void)
 {
+	return 102400000;
 	//TODO
 }
 
