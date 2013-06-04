@@ -69,6 +69,10 @@
 /* Ethernet */
 #define P4A_ETHER_PHYS				0xE0300000
 
+/* NAND Controller */
+#define P4A_NANDC_PHYS				0xE0800000
+
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 /* Global Registers */

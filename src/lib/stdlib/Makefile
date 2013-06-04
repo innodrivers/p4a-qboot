@@ -1,5 +1,5 @@
 
-OBJS_C = string.o stdio.o
+OBJS_C = string.o stdio.o eabi.o
 SRCS_C := $(OBJS_C:.o=.c)
 
 all: $(BUILT_IN_OBJ)

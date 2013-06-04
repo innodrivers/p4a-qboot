@@ -1,5 +1,5 @@
 
-OBJS_C = command.o cmd_bootlinux.o
+OBJS_C = command.o cmd_bootlinux.o cmd_nand.o
 SRCS_C := $(OBJS_C:.o=.c)
 
 all: $(BUILT_IN_OBJ)

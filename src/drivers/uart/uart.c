@@ -51,6 +51,14 @@ static unsigned int uart_base[] = {
 #define USR_RTS					(1 << 16)
 #define USR_CTS					(1 << 17)
 
+/* Uart Status Register (USR) fifo level bit fields for uart1 and uart2 */
+#define USR1_RFLEVEL_SHIFT		(0)
+#define USR1_RFLEVEL_MASK		(0x3f << USR_RFLEVEL_SHIFT)
+#define USR1_TFLEVEL_SHIFT		(6)
+#define USR1_TFLEVEL_MASK		(0x3f << USR_TFLEVEL_SHIFT)
+
+
+
 /*
  * Uart Control Register (UCR) bit fields
  */
@@ -197,7 +205,14 @@ void uart_deinit(int port)
 
 int uart_tstc(int port)
 {
-	return (rd_regl(port, USR) & USR_RFLEVEL_MASK);
+	if(1 == port || 2 == port)/*uart 1, uart2*/
+	{
+		return (rd_regl(port, USR) & USR1_RFLEVEL_MASK);
+	}
+	else if(3 == port)/*4 wire uart*/
+	{
+		return (rd_regl(port, USR) & USR_RFLEVEL_MASK);
+	}
 }
 
 

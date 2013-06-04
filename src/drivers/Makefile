@@ -1,4 +1,4 @@
-SUBDIRS = uart timer
+SUBDIRS = uart timer nand
 
 SUB_BUILT_IN_OBJS := $(foreach n, $(SUBDIRS), $(n)/$(BUILT_IN_OBJ))
 
