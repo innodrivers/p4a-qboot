@@ -26,16 +26,12 @@ static unsigned int uart_base[] = {
 #define UTBR		(0x08)		/* Uart Transmit Buffer register */
 #define USR			(0x0c)		/* Uart Status register */
 #define UCR			(0x10)		/* Uart Control register */
+
+/* following registers only exists in UART4W */
 #define UISR		(0x14)		/* Uart Interrupt Status register */
 #define UICR		(0x18)		/* Uart Interrupt Clear register */
 #define UIER		(0x1c)		/* Uart Interrupt Enable register */
-#define URTSCR		(0x20)		/* Uart RTS Control register */
 
-/*
- * Uart Match Register (UMR) bit fields
- */
-#define UMR_VALUE(_clock_, _baudrate_)		( ((_clock_) << 4)/(_baudrate_) - 256 )
-#define UMR_VALUE_OVERSAMPLE(_clock_, _oversample_, _baudrate_)		((_clock_)/(_baudrate_)*256/(_oversample_) - 256)
 
 /*
  * Uart Status Register (USR) bit fields
@@ -85,7 +81,6 @@ static unsigned int uart_base[] = {
 #define UCR_DMA_MODE		(1 << 23)
 #define UCR_CTS_POL			(1 << 24)		/* CTS Polarity */
 #define UCR_RTS_POL			(1 << 25)		/* RTS Polarity */
-#define UCR_OVERSAMPLE_RATE(x)	(((x) & 0x1f) << 27)
 
 /*
  * Uart Interrupt Status Register (UISR) bit fields
@@ -114,12 +109,6 @@ static unsigned int uart_base[] = {
 #define UIER_RX_OVERFLOW	(1 << 3)
 #define UIER_TX_OVERFLOW	(1 << 4)
 
-
-/*
- * Uart RTS Control Register (URTSCR) bit fields
- */
-#define URTSCR_DEASSERT_THRESHOLD(x)	(((x) & 0x7f)<<0)
-#define URTSCR_REASSERT_THRESHOLD(x)	(((x) & 0x7f)<<8)
 
 #define TX_FIFO_DEPTH		(64)
 #define RX_FIFO_DEPTH		(64)
@@ -155,7 +144,6 @@ static void enable_uart_clock(int port, int enable)
 
 int uart_init(int port, int baudrate, int parity, int bits, int stop, int flow)
 {
-#define OVERSAMPLE		(16)
 	unsigned long uart_clk;
 	unsigned int ucr_val;
 
@@ -186,11 +174,6 @@ int uart_init(int port, int baudrate, int parity, int bits, int stop, int flow)
 	if (stop == 2)
 		ucr_val |= UCR_NBSTOP_2;
 	
-	if (flow == 'r') { // RTS/CTS hardware flow control
-		wr_regl(port, URTSCR, URTSCR_DEASSERT_THRESHOLD(48) | URTSCR_REASSERT_THRESHOLD(16));
-		ucr_val |= UCR_CTS_EN | UCR_RTS_EN | UCR_CTS_POL |UCR_RTS_POL;
-	}
-
 	wr_regl(port, UCR, ucr_val | UCR_UART_EN);
 
 	return 0;
@@ -205,14 +188,12 @@ void uart_deinit(int port)
 
 int uart_tstc(int port)
 {
-	if(1 == port || 2 == port)/*uart 1, uart2*/
-	{
-		return (rd_regl(port, USR) & USR1_RFLEVEL_MASK);
-	}
-	else if(3 == port)/*4 wire uart*/
-	{
+	if (port == 2) {//UART4W
 		return (rd_regl(port, USR) & USR_RFLEVEL_MASK);
 	}
+
+	//UART 1, 2
+	return (rd_regl(port, USR) & USR1_RFLEVEL_MASK);
 }
 
 
