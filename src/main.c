@@ -99,12 +99,16 @@ int main(void)
 
 	PRINT("welcome to bootloader!\n");
 
-#if 0
-	start_console();
-#else
-	boot_linux();
-#endif
-	
+	/* when running here, if the serial port press the
+	 * character 'c', then enter the interactive mode,
+	 * otherwise boot linux kernel directly.
+	 */
+	if (serial_getc() == 'c') {
+		start_console();
+
+	} else {
+		boot_linux();
+	}
 	
 	dead_loop();
 	
