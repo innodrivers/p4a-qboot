@@ -10,7 +10,10 @@ unsigned long get_uart_clk(int idx)
 {
 	return 38400000;
 }
-
+unsigned long get_timer_clk(void)
+{
+	return 38400000;
+}
 #else
 static unsigned long sysin_clkrate = 19200000;
 
@@ -61,7 +64,7 @@ static unsigned long get_peri_ref_clkrate(void)
 	unsigned long rate;
 
 	parent_rate = get_peri_source_clkrate();
-	div = ((*REG32(PMU_CLKRST2_REG) >> 25) & 0x1f) + 1;
+	div = ((*REG32(PMU_CLKRST2_REG) >> 25) & 0xf) + 1;
 
 	rate = parent_rate/div;
 
@@ -69,18 +72,23 @@ static unsigned long get_peri_ref_clkrate(void)
 
 }
 
-static unsigned long get_uart1_2_clkrate(void)
+unsigned long get_timer_clk(void)
 {
 	unsigned long parent_rate;
 	int div;
 	unsigned long rate;
 
 	parent_rate = get_peri_ref_clkrate();
-	div = (*REG32(GBL_CFG_PERI_CLK_REG) & 0x1f) + 1;
+	div = (*REG32(GBL_CFG_PERI_CLK_REG) & 0xf) + 1;
 
 	rate = parent_rate/div;
 
 	return rate;
+}
+
+static unsigned long get_uart1_2_clkrate(void)
+{
+	return get_timer_clk();
 }
 
 static unsigned long get_axi_ref_clkrate(void)
@@ -123,7 +131,7 @@ static unsigned long get_hclk(void)
 	unsigned long rate;
 
 	parent_rate = get_axi_ref_clkrate();
-	div = (*REG32(GBL_CFG_BUS_CLK_REG) & 0x1f) + 1;
+	div = (*REG32(GBL_CFG_BUS_CLK_REG) & 0xf) + 1;
 
 	rate = parent_rate / div;
 
@@ -149,15 +157,46 @@ unsigned long get_uart_clk(int idx)
 
 #endif
 
-unsigned long get_timer_clk(void)
-{
-	return 102400000;
-	//TODO
-}
-
 
 void clock_switch(enum clock_id clk, int on)
 {
+	switch (clk) {
+	case CLK_TIMER:
+		if (on)
+			*REG32(GBL_CFG_BUS_CLK_REG) |= (0x1 << 15);
+		else
+			*REG32(GBL_CFG_BUS_CLK_REG) &= ~(0x1 << 15);
+		break;
+	case CLK_P4TIMER:
+		break;
+	case CLK_UART1:
+	case CLK_UART2:
+		if (on)
+			*REG32(GBL_CFG_BUS_CLK_REG) |= (0x1 << 7);
+		else
+			*REG32(GBL_CFG_BUS_CLK_REG) &= ~(0x1 << 7);
+		break;
+	case CLK_UART4W:
+		if (on) {
+			*REG32(GBL_CFG_BUS_CLK_REG) |= (0x1 << 5);
+			*REG32(GBL_CFG_SOFTRST_REG) |= (0x1 << 26);
+		} else {
+			*REG32(GBL_CFG_BUS_CLK_REG) &= ~(0x1 << 5);
+			*REG32(GBL_CFG_SOFTRST_REG) &= ~(0x1 << 26);
+		}
+		break;
+	case CLK_NAND:
+		if (on) {
+			*REG32(GBL_CFG_BUS_CLK_REG) |= (0x1 << 16);
+			*REG32(GBL_CFG_SOFTRST_REG) |= (0x1 << 10);
+		} else {
+			*REG32(GBL_CFG_BUS_CLK_REG) &= ~(0x1 << 16);
+			*REG32(GBL_CFG_SOFTRST_REG) &= ~(0x1 << 10);
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 

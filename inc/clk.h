@@ -9,9 +9,10 @@ unsigned long get_timer_clk(void);
 enum clock_id {
 	CLK_TIMER = 0,
 	CLK_P4TIMER,
-	CLK_GPIO,
-	CLK_UART,
+	CLK_UART1,
+	CLK_UART2,
 	CLK_UART4W,
+	CLK_NAND,
 };
 
 void clock_switch(enum clock_id clk, int on);
