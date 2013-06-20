@@ -278,7 +278,7 @@ int printf(const char *pchFmt, ...)
 {
 	int *nPara = (int *)&pchFmt + 1;
 	int nPrtedlen;
-	char chArraybuf[512];
+	char chArraybuf[1024];
 	char *pchBuf = chArraybuf;
 
 	nPrtedlen = vsprintf(chArraybuf, pchFmt, nPara);

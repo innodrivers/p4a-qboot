@@ -54,8 +54,6 @@ int p4a_board_init(void)
 	//UART4W as serial debug port
 	//serial_init(2);
 
-	//NAND controller
-	platform_init_nand();
 
 	return 0;
 }

@@ -106,6 +106,8 @@ int main(void)
 	 * otherwise boot linux kernel directly.
 	 */
 	if ((serial_tstc() != 0) && (serial_getc() == 'c')) {
+		//NAND controller
+		platform_init_nand();
 		start_console();
 
 	} else {
