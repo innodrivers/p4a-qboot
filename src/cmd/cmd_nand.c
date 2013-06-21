@@ -122,8 +122,7 @@ static int cmd_nand_write(int argc, char** argv)
 
 	size = memparse(argv[3], NULL);
 	
-	if(argc == 5)
-	{
+	if (argc == 5){
 		withoob = (int)simple_strtoul(argv[4], NULL, 0);
 	}
 	 
@@ -170,8 +169,7 @@ static int cmd_nand_read(int argc, char** argv)
 
 	size = memparse(argv[3], NULL);
 	
-	if(argc == 5)
-	{
+	if (argc == 5){
 		withoob = (int)simple_strtoul(argv[4], NULL, 0);
 	}
 	
@@ -183,7 +181,7 @@ static int cmd_nand_read(int argc, char** argv)
 
 	ret = nand_flash_read(&ri);
 	
-	if(ret){
+	if (ret){
 		PRINT("nand read failed\n");
 	}
 
@@ -303,7 +301,7 @@ static int cmd_nand_erase(int argc, char** argv)
 	return ret;
 }
 
-unsigned long long test_buf[(1024 + 32) * 2];
+unsigned long long test_buf[1024 + 32];
 static int cmd_test_nand_write(int argc, char** argv)
 {
 	int i;
@@ -332,7 +330,7 @@ static int cmd_test_nand_write(int argc, char** argv)
 	
 	PRINT("cmd_test_nand_write erase done\n");
 	
-	for(i = 0 ; i < 4096; i++){
+	for (i = 0 ; i < 4096; i++){
 	    ps[i] = (i & 0xff);
 	}
 	
@@ -346,7 +344,7 @@ static int cmd_test_nand_write(int argc, char** argv)
 
 	ret = nand_flash_write(&pi);
 	
-	if(ret){
+	if (ret){
 		PRINT("nand write failed\n");
 		return -1;
 	}
@@ -361,13 +359,13 @@ static int cmd_test_nand_write(int argc, char** argv)
 
 	ret = nand_flash_read(&ri);
 	
-	if(ret){
+	if (ret){
 		PRINT("nand read failed\n");
 		return -1;
 	}
 
-	for(i = 0; i < 4096; i++){
-		if(ps[i] != ps[i + 4096]){
+	for (i = 0; i < 4096; i++){
+		if (ps[i] != ps[i + 4096]){
 			PRINT("cmd_test_nand_write	 read back compare failed ps[%d] %d %d\n", i, ps[i],ps[i+4096]);
 			PRINT("ps 0x%x %d\n", ps, ps[i + 4096 + 1]);
 			ret = -1;
@@ -377,10 +375,10 @@ static int cmd_test_nand_write(int argc, char** argv)
 	}
 	PRINT("ps 0x%x \n", ps);
 
-	if(0 == ret){
+	if (0 == ret){
 		PRINT("cmd_test_nand_write success\n");
 	}
-	else{
+	else {
 		PRINT("cmd_test_nand_write failed\n");
 	}
 	
@@ -406,11 +404,11 @@ static int cmd_nand(int argc, char** argv)
 	argc--;
 	argv++;
 
-	for(i = 0; i < strlen(sub_cmd); i++){
-		if(isalpha(sub_cmd[i])){
+	for (i = 0; i < strlen(sub_cmd); i++){
+		if (isalpha(sub_cmd[i])){
 			sub_cmd[i] = toupper(sub_cmd[i]);
 		}
-		else{
+		else {
 			PRINT("nand subcmd err: %s", sub_cmd);
 			return -1;
 		}
@@ -434,7 +432,7 @@ static int cmd_nand(int argc, char** argv)
 	else if (!strncmp(sub_cmd, "GETINFO", 7)){
 		ret = cmd_nand_getinfo(argc, argv);
 	}
-	else{
+	else {
 		PRINT("unknown nand subcmd %s\n    %s", sub_cmd, nand_cmd_help);
 		return -1;
 	}
@@ -475,7 +473,7 @@ static int cmd_test_nand_oob(int argc, char** argv)
 	
 	PRINT(" erase done\n");
 	
-	for(i = 0 ; i < 4096 + 64 * 2; i++){
+	for (i = 0 ; i < 4096 + 64 * 2; i++){
 	    ps[i] = (i & 0xff);
 	}
 	
@@ -489,7 +487,7 @@ static int cmd_test_nand_oob(int argc, char** argv)
 
 	ret = nand_flash_write(&pi);
 	
-	if(ret){
+	if (ret){
 		PRINT("nand write failed\n");
 		err_cnt++;
 		goto case2;
@@ -505,14 +503,14 @@ static int cmd_test_nand_oob(int argc, char** argv)
 
 	ret = nand_flash_read(&ri);
 	
-	if(ret){
+	if (ret){
 		PRINT("nand read failed\n");
 		err_cnt++;
 		goto case2;
 	}
 
-	for(i = 0; i < 4096 + 64 * 2; i++){
-		if(ps[i] != ps[i + 4096 + 64 * 2]){
+	for (i = 0; i < 4096 + 64 * 2; i++){
+		if (ps[i] != ps[i + 4096 + 64 * 2]){
 			PRINT("cmd_test_nand_write_oob	 read back compare failed ps[%d] %d %d\n", i, ps[i],ps[i + 4096 + 64 * 2]);
 			PRINT("ps 0x%x %d\n", ps, ps[i + 4096 + 64 * 2 + 1]);
 			ret = -1;
@@ -526,10 +524,10 @@ static int cmd_test_nand_oob(int argc, char** argv)
 case2:
 
 
-	if(0 == ret){
+	if (0 == ret){
 		PRINT("cmd_test_nand_write_oob success\n");
 	}
-	else{
+	else {
 		PRINT("cmd_test_nand_write_oob failed\n");
 	}
 }
